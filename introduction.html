@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>1 Introduction | 01-basics.knit</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="1 Introduction | 01-basics.knit" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="1 Introduction | 01-basics.knit" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="exploratory-data-analysis.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="assets/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="toc-logo"><a href="./"><img src="assets/images/Tecnico_logo.svg"></a></li>
+<p class="toc-course">TRANSPORT DEMAND MODELLING</p>
+<p class="toc-title">Average Daily Trip per Person in Lisbon Metropolitan Area</p>
+<p class="toc-author">Liliane Leão</p>
+<p class="toc-author">Fabiana Peixoto de Mello</p>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#dataset"><i class="fa fa-check"></i><b>1.1</b> Dataset</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#variables"><i class="fa fa-check"></i><b>1.2</b> Variables</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#a-priori-knowledge"><i class="fa fa-check"></i><b>1.3</b> A priori knowledge</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html"><i class="fa fa-check"></i><b>2</b> Exploratory Data Analysis</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html#normality-of-dependent-variable"><i class="fa fa-check"></i><b>2.1</b> Normality of Dependent Variable</a></li>
+<li class="chapter" data-level="2.2" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html#independent-variables-analysis"><i class="fa fa-check"></i><b>2.2</b> Independent Variables’ Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="outliers.html"><a href="outliers.html"><i class="fa fa-check"></i><b>3</b> Outliers</a></li>
+<li class="chapter" data-level="4" data-path="exploratory-factor-analysis.html"><a href="exploratory-factor-analysis.html"><i class="fa fa-check"></i><b>4</b> Exploratory Factor Analysis</a></li>
+<li class="chapter" data-level="5" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i><b>5</b> Models</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="models.html"><a href="models.html#model-1"><i class="fa fa-check"></i><b>5.1</b> Model 1</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="models.html"><a href="models.html#linearity"><i class="fa fa-check"></i><b>5.1.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.1.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation"><i class="fa fa-check"></i><b>5.1.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.1.3" data-path="models.html"><a href="models.html#normality-of-residuals"><i class="fa fa-check"></i><b>5.1.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.1.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity"><i class="fa fa-check"></i><b>5.1.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.1.5" data-path="models.html"><a href="models.html#homoscedasticity"><i class="fa fa-check"></i><b>5.1.5</b> Homoscedasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="models.html"><a href="models.html#model-2"><i class="fa fa-check"></i><b>5.2</b> Model 2</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="models.html"><a href="models.html#linearity-1"><i class="fa fa-check"></i><b>5.2.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.2.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation-1"><i class="fa fa-check"></i><b>5.2.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="models.html"><a href="models.html#normality-of-residuals-1"><i class="fa fa-check"></i><b>5.2.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.2.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity-1"><i class="fa fa-check"></i><b>5.2.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.2.5" data-path="models.html"><a href="models.html#homoscedasticity-1"><i class="fa fa-check"></i><b>5.2.5</b> Homoscedasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="models.html"><a href="models.html#model-3"><i class="fa fa-check"></i><b>5.3</b> Model 3</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="models.html"><a href="models.html#linearity-2"><i class="fa fa-check"></i><b>5.3.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.3.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation-2"><i class="fa fa-check"></i><b>5.3.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.3.3" data-path="models.html"><a href="models.html#normality-of-residuals-2"><i class="fa fa-check"></i><b>5.3.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.3.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity-2"><i class="fa fa-check"></i><b>5.3.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.3.5" data-path="models.html"><a href="models.html#homoscedasticity-2"><i class="fa fa-check"></i><b>5.3.5</b> Homoscedasticity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>6</b> Discussion</a></li>
+<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
+<li class="chapter" data-level="8" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>8</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!--bookdown:title:end-->
+<!--bookdown:title:start-->
+<div id="introduction" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> Introduction<a href="introduction.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>The purpose of this report is to describe and discuss cause and effect relationships between the average number of daily trips per person in the Lisbon Metropolitan Area (LMA) and 14 independent variables and present and discuss linear regression models that best reflect these relationships.</p>
+<div id="dataset" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Dataset<a href="introduction.html#dataset" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This report is based on a survey conducted on 273 traffic zones in the (LMA): 40 zones in the council of Lisbon and 243 boroughs in the 17 councils in the south and north bounds of the LMA. The survey was conducted in 2010. The objective of the survey was to gather information to predict the average number of trips during the day per person.</p>
+</div>
+<div id="variables" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Variables<a href="introduction.html#variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Below are descriptions of the variables.</p>
+<ol style="list-style-type: decimal">
+<li><p>atrip - Average trips per day per person in the Lisbon Metropolitan Area.</p></li>
+<li><p>AActT - Total number of hours spent in activity until the final trip of the day.</p></li>
+<li><p>AcessMetroResid - Distance in meters to closest subway or suburban rail stations near the residence.</p></li>
+<li><p>aChildren - Average number of children in the households.</p></li>
+<li><p>ATTD - Average total kilometers traveled during the day per person.</p></li>
+<li><p>ATTT - Average total minutes spent travelling during the day.</p></li>
+<li><p>AvCar - Car or car and/or motorcycle daily availability.</p></li>
+<li><p>DCBD - Distance in kilometers to CBD specified by the three main employment locations: Saldanha, Av. Columbano Bordalo Pinheiro and Parque das Nações (km).</p></li>
+<li><p>ElderRetired - Number of elder or retired persons in the households.</p></li>
+<li><p>ParkingOrigin - Indicator (between 0 and 1) that indicates the parking pressure close to the residential area. Higher values indicate lower parking availability.</p></li>
+<li><p>TCPass - Percentage of interviewees holding a Public Transport Pass.</p></li>
+<li><p>Personal - Percentage of interviewees that referred Personal as the main trip purpose within the trip chain.</p></li>
+<li><p>Shopping - Percentage of interviewees that referred Shopping as the main trip purpose within the trip chain.</p></li>
+<li><p>Family - Percentage of interviewees that referred Family as the main trip purpose within the trip chain.</p></li>
+<li><p>Work - Percentage of interviewees that referred Work as the main trip purpose within the trip chain.</p></li>
+</ol>
+</div>
+<div id="a-priori-knowledge" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> A priori knowledge<a href="introduction.html#a-priori-knowledge" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Public statistics (INE, 2018) indicate that, in 2017, in the LMA, the average daily trip per person was 2.60, each trip had an average duration of 24.5 minutes and average distance of 11km. Based on these statistics, we anticipate four main factors influencing the average daily trip per person.</p>
+<p>The first is <strong><em>centrality</em></strong>. Lisbon municipality has a strong central status in the LMA. It was the first or second municipal destination of commuting trips originated in the other municipalities. 50% of commuting trips were inter-municipal and 60% had Alcochete, Oeiras and Lisbon as destination. 34.6% of all trips were inter-municipal. Lisbon was the top destination of shopping and school inter-municipal trips originated in the majority of municipalities.</p>
+<p>The second is <strong><em>use of</em></strong> <strong><em>private over public transportation</em></strong>. 58.9% of trips were made by car, and 15.8% by public transportation. Use of public and private transportation should be strongly correlated for the first and second main reasons to chose public transportation were unavailability of individual transportation (44.0%) and lack of alternatives (42.5%). Use of private transportation should be related to total duration of trips for the first and second main reasons to choose private over public transportation were speed (62.5%) and comfort (50,4%). Trips by train, bus and car had decreased average duration: 53.4, 45.8, and 21.7 minutes, respectively. Use of private transportation should also be related to access to metro because the third main reason to choose private over public transportation was lack of direct public transportation (30.3%). Finally, use of private transportation should be related to parking pressure, for almost all trips by car (95.8%) were made by individuals who had free parking close to its residence.</p>
+<p>The third is <strong><em>activity level</em></strong>. The main trip purpose was commuting : 30.8% of trips. Mobility rates among elder and retired individuals were lower than among other groups. While an average of 80.4% of the population of LMA is mobile, only 69.9% of 65 to 84 years-old and 70.8% of retired are. Also, while most trips were made by car, active transportation was more expressive in shopping trips.</p>
+<p>The fourth is <strong><em>inter/intra municipal trips</em></strong>. 65.44% of all trips were intra-municipal and in in all zones, at least 50% of the trips is intra-municipal. Intra-municipal trips were were longer in duration and distance than the total average: average duration of 35.0 minutes and average distance of 16.4 km.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="exploratory-data-analysis.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "section",
+"depth": 4
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

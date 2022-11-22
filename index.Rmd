@@ -1,0 +1,15 @@
+--- 
+title:"Average Daily Trip per person in the Lisbon Metropolitan Area"
+subtitle: "Multiple Linear Regression Model"
+author:
+"Liliane Leão", "Fabiana Peixoto de Mello"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: ["packages.bib", "example.bib"]
+biblio-style: apalike
+link-citations: yes
+always_allow_html: yes
+
+---
+

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Discussion | 01-basics.knit</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Discussion | 01-basics.knit" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Discussion | 01-basics.knit" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="models.html"/>
+<link rel="next" href="conclusion.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="assets/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="toc-logo"><a href="./"><img src="assets/images/Tecnico_logo.svg"></a></li>
+<p class="toc-course">TRANSPORT DEMAND MODELLING</p>
+<p class="toc-title">Average Daily Trip per Person in Lisbon Metropolitan Area</p>
+<p class="toc-author">Liliane Leão</p>
+<p class="toc-author">Fabiana Peixoto de Mello</p>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#dataset"><i class="fa fa-check"></i><b>1.1</b> Dataset</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#variables"><i class="fa fa-check"></i><b>1.2</b> Variables</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#a-priori-knowledge"><i class="fa fa-check"></i><b>1.3</b> A priori knowledge</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html"><i class="fa fa-check"></i><b>2</b> Exploratory Data Analysis</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html#normality-of-dependent-variable"><i class="fa fa-check"></i><b>2.1</b> Normality of Dependent Variable</a></li>
+<li class="chapter" data-level="2.2" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html#independent-variables-analysis"><i class="fa fa-check"></i><b>2.2</b> Independent Variables’ Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="outliers.html"><a href="outliers.html"><i class="fa fa-check"></i><b>3</b> Outliers</a></li>
+<li class="chapter" data-level="4" data-path="exploratory-factor-analysis.html"><a href="exploratory-factor-analysis.html"><i class="fa fa-check"></i><b>4</b> Exploratory Factor Analysis</a></li>
+<li class="chapter" data-level="5" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i><b>5</b> Models</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="models.html"><a href="models.html#model-1"><i class="fa fa-check"></i><b>5.1</b> Model 1</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="models.html"><a href="models.html#linearity"><i class="fa fa-check"></i><b>5.1.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.1.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation"><i class="fa fa-check"></i><b>5.1.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.1.3" data-path="models.html"><a href="models.html#normality-of-residuals"><i class="fa fa-check"></i><b>5.1.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.1.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity"><i class="fa fa-check"></i><b>5.1.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.1.5" data-path="models.html"><a href="models.html#homoscedasticity"><i class="fa fa-check"></i><b>5.1.5</b> Homoscedasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="models.html"><a href="models.html#model-2"><i class="fa fa-check"></i><b>5.2</b> Model 2</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="models.html"><a href="models.html#linearity-1"><i class="fa fa-check"></i><b>5.2.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.2.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation-1"><i class="fa fa-check"></i><b>5.2.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="models.html"><a href="models.html#normality-of-residuals-1"><i class="fa fa-check"></i><b>5.2.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.2.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity-1"><i class="fa fa-check"></i><b>5.2.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.2.5" data-path="models.html"><a href="models.html#homoscedasticity-1"><i class="fa fa-check"></i><b>5.2.5</b> Homoscedasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="models.html"><a href="models.html#model-3"><i class="fa fa-check"></i><b>5.3</b> Model 3</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="models.html"><a href="models.html#linearity-2"><i class="fa fa-check"></i><b>5.3.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.3.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation-2"><i class="fa fa-check"></i><b>5.3.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.3.3" data-path="models.html"><a href="models.html#normality-of-residuals-2"><i class="fa fa-check"></i><b>5.3.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.3.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity-2"><i class="fa fa-check"></i><b>5.3.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.3.5" data-path="models.html"><a href="models.html#homoscedasticity-2"><i class="fa fa-check"></i><b>5.3.5</b> Homoscedasticity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>6</b> Discussion</a></li>
+<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
+<li class="chapter" data-level="8" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>8</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="discussion" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Discussion<a href="discussion.html#discussion" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Mobility measures are dynamic. “Hard” factors, such as number of users and infrastructure, affect “soft” factors, such as users’ behaviors and political environment, which, in their turn, affect “hard” factors. Any survey is but a static representation of this dynamic circle. And any model is but an attempt to represent the relationships as of the moment of the survey.</p>
+<p>It is very difficult to capture “soft” trends in regression models with cross sectional data as we observe in this report. The dataset studied herein was collected in 2010, whilst available public statistics were collected in 2017. The average daily trip per person did not change significantly (-0.07) in both datasets, but in 2017 trips were longer in distance (+4.6km) and shorter in duration (-5.2minutes). This suggests an increased car use. The models presented herein - based on the 2010 dataset - do not account for this or for other “soft” trends.</p>
+<p>All three models presented herein are significant to predict atrip at the p&lt;.01 level and all satisfy the multiple linear regression assumptions (linearity and additivity, no or little autocorrelation, normality of residuals, no or little multicollinearity and homoscedasticity) (Table <a href="discussion.html#tab:Compare">6.1</a>).</p>
+<table style="width:90%; font-size: 11px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:Compare">Table 6.1: </span>Comparison of Models
+</caption>
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Model 1
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Model 2
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Model 3
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Predictors
+</th>
+<th style="text-align:right;">
+Estimates
+</th>
+<th style="text-align:right;">
+CI
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:right;">
+Estimates
+</th>
+<th style="text-align:right;">
+CI
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:right;">
+Estimates
+</th>
+<th style="text-align:right;">
+CI
+</th>
+<th style="text-align:right;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+2.65
+</td>
+<td style="text-align:right;">
+2.31 – 3.00
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+2.37
+</td>
+<td style="text-align:right;">
+2.06 – 2.68
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+2.68
+</td>
+<td style="text-align:right;">
+2.64 – 2.71
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AActT
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+0.10 – 0.19
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+0.07 – 0.13
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATTT
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
+0.07 – 0.14
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
+0.07 – 0.14
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lp1 DCBD
+</td>
+<td style="text-align:right;">
+-0.10
+</td>
+<td style="text-align:right;">
+-0.15 – -0.05
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+-0.10
+</td>
+<td style="text-align:right;">
+-0.15 – -0.05
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin
+</td>
+<td style="text-align:right;">
+0.35
+</td>
+<td style="text-align:right;">
+0.15 – 0.55
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+<td style="text-align:right;">
+0.37
+</td>
+<td style="text-align:right;">
+0.16 – 0.57
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Personal
+</td>
+<td style="text-align:right;">
+-0.68
+</td>
+<td style="text-align:right;">
+-1.17 – -0.20
+</td>
+<td style="text-align:right;">
+0.006
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TCPass
+</td>
+<td style="text-align:right;">
+-0.66
+</td>
+<td style="text-align:right;">
+-0.90 – -0.43
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+-0.67
+</td>
+<td style="text-align:right;">
+-0.91 – -0.43
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Work
+</td>
+<td style="text-align:right;">
+-0.74
+</td>
+<td style="text-align:right;">
+-1.15 – -0.33
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Peripherality
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+-0.14
+</td>
+<td style="text-align:right;">
+-0.18 – -0.10
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Activity Level
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.09
+</td>
+<td style="text-align:right;">
+0.05 – 0.13
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Private Transport
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.02 – 0.11
+</td>
+<td style="text-align:right;">
+0.004
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Observations
+</td>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+263
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2 / R2 adjusted
+</td>
+<td style="text-align:right;">
+0.388 / 0.371
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.354 / 0.342
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.178 / 0.168
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>Model 3 is based on the factor analysis results and it most closely resembles the underlying drivers of atrip inferred by the results of the 2017 survey (INE 2018). The independent variables are Peripherality, Activity Level and Private Transportation. Intra/inter municipal trips is not captured by the model.</p>
+<p>Model 3 has a small R<sup>2</sup> of .178. Its R<sup>2</sup> (.178) is barely higher than the R<sup>2</sup> of the linear regression with ParkingOrigin alone as independent variable(.116) . Models 1 and 2 have almost twice Model 3’s R<sup>2</sup>. One possible explanation is that Model 3 does not capture differences between intra /inter municipal trips.</p>
+<p>Model 3 is, however, a powerful tool to explain the atrip phenomenon, and it confirms our a priori knowledge of the subject.</p>
+<ul>
+<li><p>Car availability (AvCar, 0.7), ownership of a public transport ticket (TCPass, -0.8), and average time spent travelling per day (ATTT, -0.4) have strong loadings on Private Transportation. This suggests the use of car over public transportation is associated with longer transit times.</p></li>
+<li><p>Percentage of individuals whose main trip purpose is commuting (Work, 0.9), percentage of individuals whose main trip purpose is shopping (Shop, -0.7), average time in activity (AActT, 0.7) and number of elders in the household (ElderRetired, -0.5) have strong loadings in Activity Level. This is consistent with the 2017 findings that commuting was the main trip purpose and that elders and retired had lower mobility rates than other segments.</p></li>
+<li><p>Distance from CBD (lp1_DCBD, 0.89), parking pressure (ParkingOrigin, -0.81), distance to metro (AcessMetroResid, 0.67), average time traveled (lp1_ATTD, 0.59), and average number of children (aChildren, 0.40) have strong loadings on Peripherality. Whilst distance to CBD is associated with higher Peripherality, parking pressure and closeness to metro are associated with lower Peripherality and higher centrality. Increased number of children in the household is also associated with higher Peripherality.</p></li>
+</ul>
+<p>Models 1 and 2 have higher R<sup>2</sup>: .388 and .354, respectively. At first glance Model 1 seems to be better for it explains a higher percentage of atrip´s variance. Upon further analysis, however, it is a poorer fit.</p>
+<p>The large quantity of IVs in the original dataset (14) brought at least two different complications to the analysis. The first is a moderate collinearity among the variables and the second is difficulty to interpret causal linkages between the predictors and atrip. Model 1, with 9 IVs, has more collinearity than Model 2, with 7 IVs. Model 2 is superior to Model 1 not only because it reduces collinearity, but also because, in doing so, it becomes easier to interpret. As an example, in Model 1 atrip is positively associated with total number of hours spent in activity until the final trip of the day (AActT) and negatively associated with the percentage of interviewees whose main trip purpose is commuting (Work). From the Correlation Matrix (Figure <a href="exploratory-factor-analysis.html#fig:CorrelationMatrix">4.1</a>) we know that AActT is significantly and positively correlated with Work. No such contradiction exists in Model 2.</p>
+<p>The regression equation for Model 2 is:</p>
+<p><span class="math display">\[\small
+atrip=2.37+0.10*AActT+0.11*ATTT+0.37*ParkingOrigin-0.10*lp1_DCBD-0.67*TCPass+ℇ
+\]</span></p>
+<p><span class="math display">\[ \small
+where ℇ ∼ N(0, 0.26)
+\]</span></p>
+<ul>
+<li><p>The expected mean value of atrip is 2.37 when all independent variables are zero. It is unlikely that this intercept is meaningful for it would mean that an interviewee would spend 0 minutes travelling whilst making 2.37 trips. This inconsistency in the regression equation is a result of atrip and ATTT being average variables.</p></li>
+<li><p>The regression parameter for AActT indicates that a 1 hour increase in number of hours spend in activity until the final trip of the day is associated with a 0.10 increase in the average trips per day per person in the LMA, holding all other variables constant;</p></li>
+<li><p>The regression parameter for ATTT indicates that 1 minute increase in number of minutes spent traveling during the day is associated with a 0.11 increase in the average trips per day per person in the LMA, holding all other variables constant;</p></li>
+<li><p>The regression parameter for ParkingOrigin indicates that an increase of one in the unit in which the indicator parking pressure is measured is associated with a 0.37 increase in the average trips per day per person in the LMA, holding all other variables constant;</p></li>
+<li><p>The regression parameter for lp1_DCBD indicates that increase in the log of the distance to CBD plus one is associated with a 0.10 decrease in the average trips per day per person in the LMA, holding all other variables constant; and</p></li>
+<li><p>The regression parameter for TCPass indicates that a 1 percent point increase in the percentage of interviewees holding a Public Transport Pass is is associated with a 0.67 decrease in the average trips per day per person in the LMA, holding all other variables constant.</p></li>
+</ul>
+<p>In terms of contributing to explaining the variability of atrip, ParkingOrigin and AActT are the most important variables (Table <a href="discussion.html#tab:ImportanceVar">6.2</a>). Parking pressure (ParkingOrigin) is associated both with Peripherality and with Private Transportation. AActT is associated with Activity Level. This suggests that ParkingOrigin and AActT are good proxies of the extracted factors.</p>
+<table style="width:90%; font-size: 11px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:ImportanceVar">Table 6.2: </span>Contribution of Predictors’ to Model 2
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Predictors
+</th>
+<th style="text-align:right;">
+Rsq
+</th>
+<th style="text-align:right;">
+Adjusted Rsq
+</th>
+<th style="text-align:right;">
+Added Adjusted Rsq
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Peripherality
+</td>
+<td style="text-align:right;">
+0.116
+</td>
+<td style="text-align:right;">
+0.112
+</td>
+<td style="text-align:right;">
+0.112
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin+AActT
+</td>
+<td style="text-align:right;">
+0.223
+</td>
+<td style="text-align:right;">
+0.217
+</td>
+<td style="text-align:right;">
+0.105
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin+AActT+ATTT
+</td>
+<td style="text-align:right;">
+0.281
+</td>
+<td style="text-align:right;">
+0.273
+</td>
+<td style="text-align:right;">
+0.056
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin+AActT+ATTT+TCPass
+</td>
+<td style="text-align:right;">
+0.321
+</td>
+<td style="text-align:right;">
+0.31
+</td>
+<td style="text-align:right;">
+0.037
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin+AActT+ATTT+TCPass+lp1_DCBD
+</td>
+<td style="text-align:right;">
+0.354
+</td>
+<td style="text-align:right;">
+0.342
+</td>
+<td style="text-align:right;">
+0.032
+</td>
+</tr>
+</tbody>
+</table>
+<p>In terms of weight in the regression equation, all variables contribute similarly, as per the standardized beta coefficients of Model 2 (Figure <a href="discussion.html#fig:scaledmodel2">6.1</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:scaledmodel2"></span>
+<p class="caption">
+Figure 6.1: Standardized Beta Coefficients - Model 2
+</p>
+<img src="figs/scaledmodel2.png" alt="Standardized Beta Coefficients - Model 2" width="60%"  />
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="conclusion.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "section",
+"depth": 4
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,1019 @@
+---
+bibliography: references.bib
+output: pdf_document
+---
+
+```{r Setup, include=FALSE}
+
+library(AICcmodavg)
+library(car)
+library(corrplot)
+library(DataExplorer)
+library(dplyr)
+library(ggplot2)
+library(ggResidpanel)
+library(gt)
+library(gridExtra)
+library(jtools)
+library(kableExtra)
+library(knitr)
+library(mctest)
+library(modelsummary)
+library(olsrr)
+library(pastecs)
+library(psych)
+library(radiant.multivariate)
+library(sjlabelled)
+library(sjmisc)
+library(sjPlot)
+library(sjtable2df)
+library(tidyverse)
+library(vtable)
+
+
+knitr::opts_chunk$set(
+                      cache=TRUE, echo=FALSE, message=FALSE, error=FALSE, warning=FALSE, comment = NA,
+                      fig.path='figs/',
+                      cache.path = '_cache/',
+                      fig.pos='H', out.extra = "",
+                      fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x},
+                      tab.cap.style = "Table Caption",
+                      tab.cap.pre = "Table ",
+                      tab.cap.sep = ". "
+                    )
+
+
+#Rounding and scientific notation
+options(digits=3)
+options(scipen=100)
+
+#Table Styling
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output())
+    "latex" else "pipe"
+})
+
+#Function to make scatterplot points transparent
+t_col <- function(color, opacity = 0.5) {
+  rgb.val <- col2rgb(color)
+  t.col <- rgb(rgb.val[1], rgb.val[2], rgb.val[3], max = 255, alpha = (opacity)*255)
+  invisible(t.col)
+  }
+
+#Function to change bw theme's text labels                     
+theme_custom <- function(){
+  theme_bw() %+replace%  
+  theme(
+    plot.caption = element_text(size = 8,hjust = 1),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 4),
+    plot.title=element_text(hjust=0.5,size=10,vjust = 2),
+    plot.margin = unit(c(0.2, 0, 0, 0), "cm")
+    )
+}
+
+#Function to add the Figure Number
+capFig = function(x){
+  if(outputFormat == 'html'){
+    x = paste0("Figure ",capFigNo,". ",x)
+    capFigNo <<- capFigNo + 1
+  }; x
+}
+
+#Changes to geom default colors
+update_geom_defaults("point", list(color = t_col("dark grey")))
+update_geom_defaults("bar", list(fill = "dark grey", color = "dark grey"))
+update_geom_defaults("line", list(fill = "dark grey", color = "dark grey"))
+update_geom_defaults("smooth", list(fill = "dark grey", color = "dark grey"))
+update_geom_defaults("abline", list(fill = "#89f0f4", color = "#89f0f4"))
+update_geom_defaults("spoke", list(fill = "dark grey", color = "dark grey"))
+update_geom_defaults("segment", list(fill = "dark grey", color = "dark grey"))
+update_geom_defaults("density", list(fill = "dark grey", color = "dark grey"))
+
+```
+
+# Introduction
+
+The purpose of this report is to describe and discuss cause and effect relationships between the average number of daily trips per person in the Lisbon Metropolitan Area (LMA) and 14 independent variables and present and discuss linear regression models that best reflect these relationships.
+
+## Dataset
+
+This report is based on a survey conducted on 273 traffic zones in the (LMA): 40 zones in the council of Lisbon and 243 boroughs in the 17 councils in the south and north bounds of the LMA. The survey was conducted in 2010. The objective of the survey was to gather information to predict the average number of trips during the day per person.
+
+## Variables
+
+Below are descriptions of the variables.
+
+1.  atrip - Average trips per day per person in the Lisbon Metropolitan Area.
+
+2.  AActT - Total number of hours spent in activity until the final trip of the day.
+
+3.  AcessMetroResid - Distance in meters to closest subway or suburban rail stations near the residence.
+
+4.  aChildren - Average number of children in the households.
+
+5.  ATTD - Average total kilometers traveled during the day per person.
+
+6.  ATTT - Average total minutes spent travelling during the day.
+
+7.  AvCar - Car or car and/or motorcycle daily availability.
+
+8.  DCBD - Distance in kilometers to CBD specified by the three main employment locations: Saldanha, Av. Columbano Bordalo Pinheiro and Parque das Nações (km).
+
+9.  ElderRetired - Number of elder or retired persons in the households.
+
+10. ParkingOrigin - Indicator (between 0 and 1) that indicates the parking pressure close to the residential area. Higher values indicate lower parking availability.
+
+11. TCPass - Percentage of interviewees holding a Public Transport Pass.
+
+12. Personal - Percentage of interviewees that referred Personal as the main trip purpose within the trip chain.
+
+13. Shopping - Percentage of interviewees that referred Shopping as the main trip purpose within the trip chain.
+
+14. Family - Percentage of interviewees that referred Family as the main trip purpose within the trip chain.
+
+15. Work - Percentage of interviewees that referred Work as the main trip purpose within the trip chain.
+
+## A priori knowledge
+
+Public statistics (INE, 2018) indicate that, in 2017, in the LMA, the average daily trip per person was 2.60, each trip had an average duration of 24.5 minutes and average distance of 11km. Based on these statistics, we anticipate four main factors influencing the average daily trip per person.
+
+The first is ***centrality***. Lisbon municipality has a strong central status in the LMA. It was the first or second municipal destination of commuting trips originated in the other municipalities. 50% of commuting trips were inter-municipal and 60% had Alcochete, Oeiras and Lisbon as destination. 34.6% of all trips were inter-municipal. Lisbon was the top destination of shopping and school inter-municipal trips originated in the majority of municipalities.
+
+The second is ***use of*** ***private over public transportation***. 58.9% of trips were made by car, and 15.8% by public transportation. Use of public and private transportation should be strongly correlated for the first and second main reasons to chose public transportation were unavailability of individual transportation (44.0%) and lack of alternatives (42.5%). Use of private transportation should be related to total duration of trips for the first and second main reasons to choose private over public transportation were speed (62.5%) and comfort (50,4%). Trips by train, bus and car had decreased average duration: 53.4, 45.8, and 21.7 minutes, respectively. Use of private transportation should also be related to access to metro because the third main reason to choose private over public transportation was lack of direct public transportation (30.3%). Finally, use of private transportation should be related to parking pressure, for almost all trips by car (95.8%) were made by individuals who had free parking close to its residence.
+
+The third is ***activity level***. The main trip purpose was commuting : 30.8% of trips. Mobility rates among elder and retired individuals were lower than among other groups. While an average of 80.4% of the population of LMA is mobile, only 69.9% of 65 to 84 years-old and 70.8% of retired are. Also, while most trips were made by car, active transportation was more expressive in shopping trips.
+
+The fourth is ***inter/intra municipal trips***. 65.44% of all trips were intra-municipal and in in all zones, at least 50% of the trips is intra-municipal. Intra-municipal trips were were longer in duration and distance than the total average: average duration of 35.0 minutes and average distance of 16.4 km.
+
+```{r Dataframes, include=FALSE}
+
+df <- read.csv("Data/data.csv", header=TRUE, sep=';', dec=".", stringsAsFactors=FALSE)
+names(df)[1] <- "atrip"
+
+df.scaled <- as.data.frame(scale(df[2:15], center=TRUE, scale=TRUE))
+df.scaled <- cbind(df$atrip, df.scaled)
+names(df.scaled)[1] <- "atrip"
+
+df.scaled.transformed <- within(df.scaled,{
+                          lp1_AcessMetroResid <- log(AcessMetroResid+1)
+                          AcessMetroResid <- NULL
+                          lp1_ATTD <- log(ATTD+1)
+                          ATTD <- NULL
+                          lp1_DCBD <- log(DCBD+1)
+                          DCBD <- NULL})
+
+df.transformed <- within(df,{
+                          lp1_AcessMetroResid <- log(AcessMetroResid+1)
+                          AcessMetroResid <- NULL
+                          lp1_ATTD <- log(ATTD+1)
+                          ATTD <- NULL
+                          lp1_DCBD <- log(DCBD+1)
+                          DCBD <- NULL})
+
+df.transformed$ATTT <- df.scaled.transformed$ATTT
+```
+
+```{r Outliers, incude=FALSE}
+
+unrestricted <- lm(atrip~., df.transformed)
+
+# Removing Outliers
+cooksd <- cooks.distance(unrestricted)
+# influential row numbers
+influential <- as.numeric(names(cooksd)[(cooksd > .6)])
+# Alternatively, remove the top x outliers to have a look
+# top_x_outlier <- 2
+# influential <- as.numeric(names(sort(cooksd, decreasing = TRUE)[1:top_x_outlier]))
+
+
+df.filtered <- df.transformed[-influential, ]
+df.scaled.transformed.filtered <- df.scaled.transformed[-influential, ]
+
+unrestricted.filtered <- lm(atrip~., df.filtered)
+```
+
+# Exploratory Data Analysis
+
+Summary statistics of all variables are on Table \@ref(tab:DescriptiveStatistics) .
+
+```{r DescriptiveStatistics, comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+descstat <- st(df, fit.page=TRUE, out="return")
+descstat$N <- as.numeric(descstat$N)
+descstat$Mean <- as.numeric(descstat$Mean)
+descstat$`Std. Dev.` <- as.numeric(descstat$`Std. Dev.`)
+descstat$Min <- as.numeric(descstat$Min)
+descstat$`Pctl. 25` <- as.numeric(descstat$`Pctl. 25`)
+descstat$`Pctl. 75` <- as.numeric(descstat$`Pctl. 75`)
+descstat$Max <- as.numeric(descstat$Max)
+
+descstat %>%
+  kable(caption = "Summary Statistics", format="html", table.attr="style='width:90%;'", align="lrrrrrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE) 
+
+```
+
+## Normality of Dependent Variable
+
+Linear regression assumes normality of the residuals of the model and not of the dependent or independent variables. Notwithstanding that, when the sample size is not sufficiently large, violation of the dependent variable's normality significantly increases variations in the standard error. The is fairly normal distributed even though a bit right skewed (Figure \@ref(fig:atripHistogram)). But it does not pass the Shapiro-Wilk normality test (test-statistic=1, p.value=0.01). We assumed, however, that the dataset is a sufficiently large sample size.
+
+```{r ShapiroDV, include=FALSE}
+shapiro.test(df$atrip)
+```
+
+```{r  atripHistogram, fig.cap= "atrip Histogram and Density Plot", fig.align="center", fig.show="hold", out.width="50%", echo=FALSE,  message=FALSE, warning=FALSE}
+ggplot(data=df.scaled, aes(atrip))+
+              geom_histogram(aes(y = ..density..))+
+              geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+              theme_custom()
+```
+
+## Independent Variables' Analysis
+
+We standardized all the IVs to inspect their linear relationship with the DV and their distribution. None of the IVs is normally distributed (Figure \@ref(fig:ScatterplotsMatrix)). Normality of the IVs is not, however, an assumption of linear regression.
+
+```{r ScatterplotsMatrix, fig.cap="Non-transformed  Variables Histograms and Scatterplots",fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="80%",  results='asis', echo=FALSE,  message=FALSE, warning=FALSE}
+
+
+grid.arrange(
+             ggplot(df.scaled, aes(x=AActT,y=atrip)) +
+                        geom_point(size=1) +
+                        labs(x="AActT", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="dark grey"),
+              
+              ggplot(df.scaled, aes(AActT))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              ggplot(df.scaled, aes(x=aChildren,y=atrip)) +
+                        geom_point() +
+                        labs(x="aChildren", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(aChildren))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              
+              ggplot(df.scaled, aes(x=ATTT,y=atrip)) +
+                        geom_point() +
+                        labs(x="ATTT", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(ATTT))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+
+              ggplot(df.scaled, aes(x=AvCar,y=atrip)) +
+                        geom_point() +
+                        labs(x="AvCar", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(AvCar))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+
+              ggplot(df.scaled, aes(x=ElderRetired,y=atrip)) +
+                        geom_point() +
+                        labs(x="ElderRetired", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(ElderRetired))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+ 
+              ggplot(df.scaled, aes(x=Family,y=atrip)) +
+                        geom_point() +
+                        labs( x="Family", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(Family))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+
+              ggplot(df.scaled, aes(x=Personal,y=atrip)) +
+                        geom_point() +
+                        labs(x="Personal", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(Personal))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+
+              ggplot(df.scaled, aes(x=Shop,y=atrip)) +
+                        geom_point() +
+                        labs(x="Shop", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(Shop))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),   
+              
+              ggplot(df.scaled, aes(x=TCPass,y=atrip)) +
+                        geom_point() +
+                        labs(x="TCPass", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(TCPass))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),              
+                                         
+              ggplot(df.scaled, aes(x=Work,y=atrip)) +
+                        geom_point() +
+                        labs(x="Work", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(Work))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              ncol=4, 
+              widths=c(1,1,1,1)
+)
+```
+
+To improve the linear relationship between the DV and the IVs AcessMetroResid, ATTD and DCBD (Figure \@ref(fig:TransformedIVs)), we log-plus-one transformed them. We observed that the transformed IVs' distributions better fit the normal distribution.
+
+```{r  TransformedIVs, fig.cap= "Transformed Variables Histogram and Scatterplots", fig.align="center", fig.show="hold", out.height="60%", out.width="70%", echo=FALSE,  message=FALSE, warning=FALSE}
+
+grid.arrange(
+
+              ggplot(df.scaled, aes(x=AcessMetroResid,y=atrip)) +
+                        geom_point() +
+                        labs(x="AcessMetroResid", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(AcessMetroResid))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              
+              ggplot(df.transformed, aes(x=lp1_AcessMetroResid,y=atrip)) +
+                        geom_point() +
+                        labs(x="lp1_AcessMetroResid", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.transformed, aes(lp1_AcessMetroResid))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              
+              ggplot(df.scaled, aes(x=ATTD,y=atrip)) +
+                        geom_point() +
+                        labs(x="ATTD", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.scaled, aes(ATTD))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              
+              ggplot(df.transformed, aes(x=lp1_ATTD,y=atrip)) +
+                        geom_point() +
+                        labs(x="lp1_AcessMetroResid", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.transformed, aes(lp1_ATTD))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              
+              ggplot(df.scaled, aes(x=DCBD,y=atrip)) +
+                        geom_point() +
+                        labs(x="DCBD", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+               ggplot(df.scaled, aes(DCBD))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              
+              ggplot(df.transformed, aes(x=lp1_DCBD,y=atrip)) +
+                        geom_point() +
+                        labs(x="lp1_DCBD", y= "atrip")+
+                        theme_custom()+
+                        geom_smooth(method=lm,se=TRUE, color="#89f0f4"),
+              
+              ggplot(df.transformed, aes(lp1_DCBD))+
+                        geom_histogram(aes(y = ..density..))+
+                        geom_density(color = "dark grey", linetype="dashed", fill = "#89f0f4", alpha = 0.6)+
+                        theme_custom(),
+              ncol=4, 
+              widths=c(1,1,1,1)
+)
+```
+
+# Outliers
+
+All IVs have outliers (Figure \@ref(fig:Boxplots)).
+
+```{r Boxplots, fig.cap="Matrix of boxplots", fig.topcaption=TRUE, fig.cap.style="Image Caption", ig.align="center", fig.show="hold", out.width="80%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange(
+  
+                ggplot(df.scaled.transformed, aes(x=atrip, y=AActT)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=lp1_AcessMetroResid)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=aChildren)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=lp1_ATTD)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=ATTT)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=AvCar)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=lp1_DCBD)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=ElderRetired)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=Family)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=ParkingOrigin)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=Personal)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=Shop)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=TCPass)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+                
+                ggplot(df.scaled.transformed, aes(x=atrip, y=Work)) + 
+                            geom_boxplot(outlier.colour="red",outlier.shape=8,outlier.size=4)+
+                            coord_flip()+
+                            theme_custom(),
+                NULL,
+              ncol=8, 
+              widths=c(0.8,0.1,0.8,0.1,0.8,0.1,0.8,0.1)
+)
+```
+
+Fitting the unrestricted model we identified 3 outliers with Cooks´ Distance higher than .6 (Figure \@ref(fig:CooksPlot)). With these 3 observations in the daaset, the unrestricted fit violates normality of residuals. We removed these observations.
+
+```{r CooksPlot, fig.cap="Cook's Distance Bar Plot", fig.topcaption=TRUE, fig.cap.style="Image Caption",fig.align="center", fig.show="hold", out.width="80%",  comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+ols_plot_cooksd_bar(unrestricted)
+# Creates a residual-leverage plot
+#resid_panel(unrestricted, plots = c("cookd"), title.opt=FALSE)
+```
+
+# Exploratory Factor Analysis
+
+All of the IVs, except Family, are correlated to at least one other IV at a correlation Pearsons' coefficient equal or higher than .3 (Figure \@ref(fig:CorrelationMatrix)).
+
+```{r CorrelationMatrix, fig.cap="Correlation Matrix", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="100%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+res <- cor.mtest(df.transformed, conf.level = .95)
+corrplot(
+     cor(df.transformed),
+     p.mat = res$p,
+     method = "number", 
+     type = "upper", 
+     order="hclust",
+     sig.level = 0.05,
+     addCoef.col = 'white',
+     number.cex = 0.5,
+     tl.cex = 0.5,
+     tl.offset=0.5,
+     tl.col="black",
+     col = COL1('Blues'),
+     addgrid.col = 'grey',
+     mar = c(1, 1, 1, 1)
+)
+```
+
+The Bartlett test with the full dataset was significant and we rejected the null hypothesis that the variables are orthogonal (χ2(91): 15983.3, p.value \<.01). The KMO (.66) suggested a strong relationship among the variables. We then removed Family and Personal whose KMOs were significantly lower than .5 (Table \@ref(tab:Prefactor)) . The results of the Bartlett test (χ2(66): 1313.77, p.value \<.01) and of the KMO (.76) improved. Consequently, we have deemed the scaled and transformed dataset suitable for factor analysis. The screeplot suggests that 3-4 factors should be extracted (Figure \@ref(fig:ScreePlot)).
+
+```{r Prefactor, comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+df.prefac1 <- subset(df.scaled.transformed.filtered, select=-c(atrip))
+df.prefac2 <- subset(df.prefac1, select=-c(Family, Personal))
+
+prefactor1 <- pre_factor(df.prefac1, "1:14")
+#summary(prefactor1)
+prefactor2 <- pre_factor(df.prefac2, "1:12")
+
+r2_1 <- prefactor1$pre_r2
+kmo_1 <- prefactor1$pre_kmo
+kmo_1 <- as.data.frame(kmo_1$MSAi)
+pretable1 <- cbind(r2_1, kmo_1)
+r2_2 <- prefactor2$pre_r2
+kmo_2 <- prefactor2$pre_kmo
+kmo_2 <- as.data.frame(kmo_2$MSAi)
+pretable2 <- cbind(r2_2, kmo_2)
+Family <- list(0, 0)
+Personal <- list(0, 0)
+pretable2 <- rbind(pretable2, Family, Personal)
+rownames(pretable2) <- c("AActT", "aChildren", "ATTT", "AvCAr", "ElderRetired", "ParkingOrigin", "Shop", "TCPass", "Work", "lp1_DCBD", "lp1_ATTD", "lp1_AcessMetroResid", "Family", "Personal")
+pretable2 <- pretable2[c(1,2,3,4,5,13,14,6,7,8,9,10,11,12), ] 
+pretable <- cbind(pretable1, pretable2)
+names(pretable) <- c("Rsq", "KMO", "Rsq", "KMO")
+
+pretable  %>%
+  kable(caption = "Variables' Rsq and KMOs", format="html", table.attr="style='width:90%;'", align="lrrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE)  %>%
+  add_header_above(c(" " = 1, "Full" = 2, "Reduced" = 2))
+```
+
+```{r ScreePlot, fig.cap="Scree Plot", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="70%", comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+scree(df.prefac2)
+#num_factors = fa.parallel(df.fa.2, fm = "pa", fa = "fa", SMC=TRUE)
+```
+
+We ran factor analysis with combinations of varimax and oblimin rotations and Maximum Likelihood and Minimum Residual Methods, with 3 and 4 factors.The most interpretable results had 3 factors only (Figure \@ref(fig:faDiagram)).
+
+```{r faDiagram, fig.cap="FA Diagram", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="80%", comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+fa.oblimin <- fa(
+              df.prefac2, 
+              nfactors = 3, 
+#             covar = FALSE, SMC = TRUE,
+              fm="ml",
+              max.iter=100, # (50 is the default, but we have changed it to 100
+              rotate="oblimin"
+)
+fa.diagram(fa.oblimin)
+```
+
+Fitting a linear regression with the extracted factors, all 3 extracted factors were statistically significantat at a p.value\<.01 in only one of the solutions: the Maximum Likelihood method and oblimin rotation . Hence, our final solution was the 3 factors with Maximum Likelihood method and oblimin rotation (Tables \@ref(tab:faLoadings) and \@ref(tab:FAResults)).
+
+```{r FAResults, include=FALSE}
+
+vacc <- data.frame(unclass(fa.oblimin$Vaccounted))
+names(vacc) <- c("Peripherality", "Activity Level", "Private Transport")
+vacc <- vacc %>%
+  kable(caption = "Factor Analysis Results", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE, position = "float_right")
+```
+
+```{r faLoadings, include=FALSE}
+
+loadings <- data.frame(unclass(fa.oblimin$loadings))
+names(loadings) <- c("Peripherality", "Activity Level", "Private Transport")
+loadings <- loadings %>%
+  kable(caption = "Factors' Loadings", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE, position = "float_left") 
+```
+
+```{r sidebyside, comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+kables(list(loadings, vacc)) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE, position = "float_left")
+```
+
+```{r FactorAnalysis, include=FALSE}
+
+print.psych(fa.oblimin)
+
+fadata <- cbind(df.scaled.transformed.filtered["atrip"], fa.oblimin$scores)
+names(fadata) <- c("atrip", "Peripherality", "Activity.Level", "Private.Transport")
+model.fa <- lm(atrip~., fadata)
+#summary(model.fa)
+```
+
+The labeled factors (Table \@ref(tab:Labels)). correspond to 3 of the 4 drivers of average daily trip per person identified in the "A priori knowledge" - Section \@ref(a-priori-knowledge). Only the intra/intermunicipality trips was not reflected in the extracted fact.
+
+```{r Labels, comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+a <- c("Peripherality", "Activity Level", "Private Transport")
+b <- c("lp1_DCBD, ParkingOrigin, lp1_AcessMetroResid, lp1_ATTD, aChildren", "Work, Shop, lp1_AActT, ElderRetired", "TCPass, AvCar, ATTT")
+c <- c("Factor related to the peripherality of the interviewee's residence zone.", "Factor related to the interviewee's level of activity.", "Factor related to the use of private over public transportation.")
+factor.labels <- cbind(a, b, c)
+factor.labels <- as.data.frame(factor.labels)
+names(factor.labels) <- c("Label", "Main Independent Variables", "Description")
+factor.labels %>%
+  kable(caption = "Factors' Labels", format="html", table.attr="style='width:90%;'", align="lll",) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=11, full_width = FALSE)  
+```
+
+# Models
+
+We have fit a model with factors' scores of the factor analysis and two models with the original independent variables (Table \@ref(tab:Compare)).
+
+## Model 1
+
+```{r Restricted_1, include=FALSE}
+
+restricted_1 <- lm(atrip~AActT+ATTT+lp1_DCBD+ParkingOrigin+Personal+TCPass+Work, df.filtered)
+```
+
+Model 1 was built with the dataset without outliers. No variables were standardized. Variables AcessMetroResid, ATTD and DCBD were transformed with log-plus-one.
+
+All regression assumptions were met.
+
+To build Model 1 we ran stepwise algorithms with the ols_best_step_subset function of the olsrr package [@olsrr] and identified the subset AActT, lp1_AcessMetroResid, ATTT, lp1_DCBD ParkingOrigin, Personal, TCPass, and Work with the lowest AIC (32.1615) and the highest adjusted R^2^ (.3964) . Fitting the model with this subset, we removed predictors that were not significant at the p\<.05 level in a stepwise manner. We first removed lp1_AcessMetroResid and then AvCar. The resulting model has 7 predictors: AActT, ATTT, lp1_DCBD, Parking Origin, Personal, TCPass and Work.
+
+A multiple linear regression was calculated to predict atrip based on AActT, ATTT, lp1_DCBD ParkingOrigin, Personal, TCPass, and Work (Table \@ref(tab:SummaryModel1)). All variables were significant predictors of atrip at the p\<.01 level . A significant regression equation was found (F-statistic (7,262) =23.7 p-value \<.001), with an R^2^ of .388
+
+```{r SummaryModel1,  results='asis', comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+sum1 <- tab_model(restricted_1)
+
+sum1 <- mtab2df(sum1,
+  n_models = 1,
+  output = "data.frame")
+
+sum1 %>%
+  kable(caption = "Model 1", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=11, full_width = FALSE) 
+```
+
+### Linearity
+
+The DV has a linear relationship with the multiple IVs in Model 1 (Figure \@ref(fig:yvpModel1)).
+
+```{r yvpModel1, fig.cap="Residual versus Predicted Model 1", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="60%", comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+resid_panel(restricted_1, plots="yvp", title.opt=FALSE)
+```
+
+### No or little autocorrelation
+
+There is no autocorrelation detected in the model according to the Durbin-Watson test (t-statistic= 1.8, p-value=0.52).
+
+```{r DWT1, include=FALSE}
+
+dwt(restricted_1)
+```
+
+### Normality of residuals
+
+Residuals of Model 1 are normally distributed as shown by its Residuals' Histogram and QQ Plot (Figure \@ref(fig:qqhistModel1)) and confirmed by the Shapiro-Wilk test results (t-statistic=.99, p-value=.16).
+
+```{r qqhistModel1, fig.cap="Residuals' Histogram and QQ Plot Model 1", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.height="40%", out.width="60%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+resid_panel(restricted_1,  plots = c("hist", "qq"), title.opt=FALSE)
+```
+
+```{r Model1Shapiro,include=FALSE}
+
+ols_test_normality(restricted_1)
+```
+
+### No or little multicollinearity
+
+All of the IVs are correlated to at least one other IV at a correlation Pearsons' coefficient equal or higher than .3 (Figure \@ref(fig:CorrelationMatrix)). There is multicollinearity in the model but it is low and variance inflation factors (VIFs) for all variables are less than 2.5 (Table \@ref(tab:Mult1)).
+
+```{r Mult1, echo=FALSE, message=FALSE, warning=FALSE}
+
+#omcdiag(restricted_1)
+#igprop(restricted_1)
+mult1 <- imcdiag(restricted_1)
+mult1 <- data.frame(unclass(mult1$idiags))
+mult1 %>%
+  kable(caption = "Multicollinearity Diagnostic Result Model 1", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE)
+```
+
+### Homoscedasticity
+
+The variance of the residuals is constant as confirmed by the Breusch Pagan Test - χ2=1.52, prob\>χ2=.22 - and by the Location-Scale Plot (Figure \@ref(fig:LocationScalePlot1)).
+
+```{r LocationScalePlot1, fig.cap="Location Scale Plot Model 1", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="60%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+resid_panel(restricted_1, plots = "ls", smoother=TRUE)
+```
+
+```{r BPTestModel1,include=FALSE}
+
+#ols_test_breusch_pagan(restricted_1)
+```
+
+## Model 2
+
+```{r Restricted_2, include=FALSE}
+
+restricted_2 <- lm(atrip~AActT+ATTT+lp1_DCBD+ParkingOrigin+TCPass, df.filtered)
+```
+
+Model 2 was built with the dataset without outliers. No variables were standardized. Variables AcessMetroResid, ATTD and DCBD were transformed with log-plus-one.
+
+All regression assumptions were met.
+
+A multiple linear regression was calculated to predict atrip based on AActT, ATTT, lp1_DCBD ParkingOrigin, and TCPass (Table \@ref(tab:SummaryModel2)). All variables were significant predictors of atrip at the p\<.01 level . A significant regression equation was found (F-statistic (5,264) =28.9 p-value \<.001), with an R^2^ of .354.
+
+```{r SummaryModel2, out.width = "350px", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+sum2 <- tab_model(restricted_2)
+
+sum2 <- mtab2df(sum2,
+  n_models = 1,
+  output = "data.frame")
+
+sum2 %>%
+  kable(caption = "Model 2", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=11, full_width = FALSE) 
+```
+
+### Linearity
+
+The DV has a linear relationship with the multiple IVs in Model 1 (Figure \@ref(fig:yvpModel2)).
+
+```{r yvpModel2, fig.cap="Residual versus Predicted Model 2", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="60%", comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+resid_panel(restricted_2, plots="yvp", title.opt=FALSE)
+```
+
+### No or little autocorrelation
+
+The Durbin-Watson test shows little autocorrelation in the data (t-statistic= 1.8, p-value=.03).
+
+```{r DWT2, include=FALSE}
+
+#dwt(restricted_2)
+```
+
+### Normality of residuals
+
+Residuals of Model 1 are normally distributed as shown by its Residuals' Histogram and QQ Plot (Figure \@ref(fig:qqhistModel2)) and confirmed by the Shapiro-Wilk test results (t-statistic=.99, p-value=.12).
+
+```{r qqhistModel2, fig.cap="Residuals' Histogram and QQ Plot Model 2", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.height="40%", out.width="60%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+resid_panel(restricted_2,  plots = c("hist", "qq"), title.opt=FALSE)
+```
+
+```{r Model2Shapiro, include=FALSE}
+
+#ols_test_normality(restricted_2)
+```
+
+### No or little multicollinearity
+
+All of the IVs are correlated to at least one other IV at a correlation Pearsons' coefficient equal or higher than .3 (Figure \@ref(fig:CorrelationMatrix)). There is multicollinearity in the model but it is low and variance inflation factors (VIFs) for all variables are less than 2.5 (Table \@ref(tab:Mult2)).
+
+```{r Mult2, echo=FALSE, message=FALSE, warning=FALSE}
+
+#omcdiag(restricted_2)
+#igprop(restricted_2)
+mult2 <- imcdiag(restricted_2)
+mult2 <- data.frame(unclass(mult2$idiags))
+mult2 %>%
+  kable(caption = "Multicollinearity Diagnostic Result Model 2", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE)
+```
+
+### Homoscedasticity
+
+The variance of the residuals is constant as confirmed by the Breusch Pagan Test - χ2=5.13, prob\>χ2=.02 - and by the Location-Scale Plot (Figure \@ref(fig:LocationScalePlot2)).
+
+```{r LocationScalePlot2, fig.cap="Location Scale Plot Model 2", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="60%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+resid_panel(restricted_2, plots = "ls", smoother=TRUE)
+```
+
+## Model 3
+
+Model 3 was built with the dataset of the four factors' scores extracted from the factor analysis.
+
+All assumptions of linear regression were met.
+
+A multiple linear regression was calculated to predict atrip based on CBD.Separation, Activity,Level, and Personal,Trips (Table \@ref(tab:SummaryModel3)). All variables were significant predictors of atrip at the p\<.01 level. A significant regression equation was found (F-statistic (3,259) =18.64 p-value \<.01), with an R^2^ of .178.
+
+```{r SummaryModel3, tab.cap="Summary Model 1", tab.topcaption=TRUE, tab.cap.style="Image Caption", out.width = "350px"}
+
+sum3 <- tab_model(model.fa)
+
+sum3 <- mtab2df(sum3,
+  n_models = 1,
+  output = "data.frame")
+
+sum3 %>%
+  kable(caption = "Model 3", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=11, full_width = FALSE) 
+```
+
+### Linearity
+
+The DV has a linear relationship with the multiple IVs in Model 3 (Figure \@ref(fig:yvpModel3)).
+
+```{r yvpModel3, fig.cap="Residual versus Predicted Model 3", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="60%", comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+resid_panel(model.fa, plots="yvp", title.opt=FALSE)
+```
+
+### No or little autocorrelation
+
+There is no autocorrelation detected in the model according to the Durbin-Watson test (t-statistic= 1.8, p-value=0.136).
+
+```{r DWT3, include=FALSE}
+
+dwt(model.fa)
+```
+
+### Normality of residuals
+
+Residuals of Model 1 are normally distributed as shown by its Residuals' Histogram and QQ Plot (Figure \@ref(fig:qqhistModel3)) and confirmed by the Shapiro-Wilk test results (t-statistic=1, p-value=.78).
+
+```{r qqhistModel3, fig.cap="Residuals' Histogram and QQ Plot Model 2", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.height="40%", out.width="60%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+resid_panel(model.fa,  plots = c("hist", "qq"), title.opt=FALSE)
+```
+
+```{r Model3Shapiro, include=FALSE}
+
+ols_test_normality(model.fa)
+```
+
+### No or little multicollinearity
+
+No independent variable is significantly correlated to the other at a correlation Pearsons' coefficient equal or higher than .3 (Figure \@ref(fig:CorrelationMatrix)). No multicollinearity was detected in the model (Table @ref(tab:Mult3)).
+
+```{r Mult3, echo=FALSE, message=FALSE, warning=FALSE}
+
+#omcdiag(model.fa)
+#igprop(model.fa)
+mult3 <- imcdiag(model.fa)
+mult3 <- data.frame(unclass(mult3$idiags))
+mult3 %>%
+  kable(caption = "Multicollinearity Diagnostic Result Model 3", format="html", table.attr="style='width:90%;'", align="lrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=10, full_width = FALSE)
+```
+
+### Homoscedasticity
+
+The variance of the residuals is constant as confirmed by the Breusch Pagan Test - χ2=0..18, prob\>χ2=0,.67 - and by the Location-Scale Plot (Figure \@ref(fig:LocationScalePlot3)).
+
+```{r LocationScalePlot3, fig.cap="Location Scale Plot Model 3", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="60%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+resid_panel(model.fa, plots = "ls", smoother=TRUE)
+```
+
+```{r BPTestModel3,include=FALSE}
+
+ols_test_breusch_pagan(model.fa)
+```
+
+# Discussion
+
+Mobility measures are dynamic. "Hard" factors, such as number of users and infrastructure, affect "soft" factors, such as users' behaviors and political environment, which, in their turn, affect "hard" factors. Any survey is but a static representation of this dynamic circle. And any model is but an attempt to represent the relationships as of the moment of the survey.
+
+It is very difficult to capture "soft" trends in regression models with cross sectional data as we observe in this report. The dataset studied herein was collected in 2010, whilst available public statistics were collected in 2017. The average daily trip per person did not change significantly (-0.07) in both datasets, but in 2017 trips were longer in distance (+4.6km) and shorter in duration (-5.2minutes). This suggests an increased car use. The models presented herein - based on the 2010 dataset - do not account for this or for other "soft" trends.
+
+All three models presented herein are significant to predict atrip at the p\<.01 level and all satisfy the multiple linear regression assumptions (linearity and additivity, no or little autocorrelation, normality of residuals, no or little multicollinearity and homoscedasticity) (Table \@ref(tab:Compare)).
+
+```{r Compare, echo=FALSE, error=FALSE, warning=FALSE, comment=NA}
+
+comp <- tab_model(restricted_1, restricted_2, model.fa)
+
+comp <- mtab2df(comp,
+  n_models = 3,
+  output = "data.frame")
+
+comp %>%
+  kable(caption = "Comparison of Models", format="html", table.attr="style='width:90%;'", align="lrrrrrrrrr", digits=2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=11, full_width = FALSE) %>%
+  add_header_above(c(" " = 1, "Model 1" = 3, "Model 2" = 3, "Model 3" = 3))
+```
+
+Model 3 is based on the factor analysis results and it most closely resembles the underlying drivers of atrip inferred by the results of the 2017 survey (INE 2018). The independent variables are Peripherality, Activity Level and Private Transportation. Intra/inter municipal trips is not captured by the model.
+
+Model 3 has a small R^2^ of .178. Its R^2^ (.178) is barely higher than the R^2^ of the linear regression with ParkingOrigin alone as independent variable(.116) . Models 1 and 2 have almost twice Model 3's R^2^. One possible explanation is that Model 3 does not capture differences between intra /inter municipal trips.
+
+Model 3 is, however, a powerful tool to explain the atrip phenomenon, and it confirms our a priori knowledge of the subject.
+
+-   Car availability (AvCar, 0.7), ownership of a public transport ticket (TCPass, -0.8), and average time spent travelling per day (ATTT, -0.4) have strong loadings on Private Transportation. This suggests the use of car over public transportation is associated with longer transit times.
+
+-   Percentage of individuals whose main trip purpose is commuting (Work, 0.9), percentage of individuals whose main trip purpose is shopping (Shop, -0.7), average time in activity (AActT, 0.7) and number of elders in the household (ElderRetired, -0.5) have strong loadings in Activity Level. This is consistent with the 2017 findings that commuting was the main trip purpose and that elders and retired had lower mobility rates than other segments.
+
+-   Distance from CBD (lp1_DCBD, 0.89), parking pressure (ParkingOrigin, -0.81), distance to metro (AcessMetroResid, 0.67), average time traveled (lp1_ATTD, 0.59), and average number of children (aChildren, 0.40) have strong loadings on Peripherality. Whilst distance to CBD is associated with higher Peripherality, parking pressure and closeness to metro are associated with lower Peripherality and higher centrality. Increased number of children in the household is also associated with higher Peripherality.
+
+Models 1 and 2 have higher R^2^: .388 and .354, respectively. At first glance Model 1 seems to be better for it explains a higher percentage of atrip´s variance. Upon further analysis, however, it is a poorer fit.
+
+The large quantity of IVs in the original dataset (14) brought at least two different complications to the analysis. The first is a moderate collinearity among the variables and the second is difficulty to interpret causal linkages between the predictors and atrip. Model 1, with 9 IVs, has more collinearity than Model 2, with 7 IVs. Model 2 is superior to Model 1 not only because it reduces collinearity, but also because, in doing so, it becomes easier to interpret. As an example, in Model 1 atrip is positively associated with total number of hours spent in activity until the final trip of the day (AActT) and negatively associated with the percentage of interviewees whose main trip purpose is commuting (Work). From the Correlation Matrix (Figure \@ref(fig:CorrelationMatrix)) we know that AActT is significantly and positively correlated with Work. No such contradiction exists in Model 2.
+
+The regression equation for Model 2 is:
+
+$$\small
+atrip=2.37+0.10*AActT+0.11*ATTT+0.37*ParkingOrigin-0.10*lp1_DCBD-0.67*TCPass+ℇ
+$$
+
+$$ \small
+where ℇ ∼ N(0, 0.26)
+$$
+
+-   The expected mean value of atrip is 2.37 when all independent variables are zero. It is unlikely that this intercept is meaningful for it would mean that an interviewee would spend 0 minutes travelling whilst making 2.37 trips. This inconsistency in the regression equation is a result of atrip and ATTT being average variables.
+
+-   The regression parameter for AActT indicates that a 1 hour increase in number of hours spend in activity until the final trip of the day is associated with a 0.10 increase in the average trips per day per person in the LMA, holding all other variables constant;
+
+-   The regression parameter for ATTT indicates that 1 minute increase in number of minutes spent traveling during the day is associated with a 0.11 increase in the average trips per day per person in the LMA, holding all other variables constant;
+
+-   The regression parameter for ParkingOrigin indicates that an increase of one in the unit in which the indicator parking pressure is measured is associated with a 0.37 increase in the average trips per day per person in the LMA, holding all other variables constant;
+
+-   The regression parameter for lp1_DCBD indicates that increase in the log of the distance to CBD plus one is associated with a 0.10 decrease in the average trips per day per person in the LMA, holding all other variables constant; and
+
+-   The regression parameter for TCPass indicates that a 1 percent point increase in the percentage of interviewees holding a Public Transport Pass is is associated with a 0.67 decrease in the average trips per day per person in the LMA, holding all other variables constant.
+
+In terms of contributing to explaining the variability of atrip, ParkingOrigin and AActT are the most important variables (Table \@ref(tab:ImportanceVar)). Parking pressure (ParkingOrigin) is associated both with Peripherality and with Private Transportation. AActT is associated with Activity Level. This suggests that ParkingOrigin and AActT are good proxies of the extracted factors.
+
+```{r ImportanceVar, comment=NA, echo=FALSE,  message=FALSE, warning=FALSE}
+
+a <- c("Peripherality", "ParkingOrigin+AActT", "ParkingOrigin+AActT+ATTT", "ParkingOrigin+AActT+ATTT+TCPass", "ParkingOrigin+AActT+ATTT+TCPass+lp1_DCBD")
+b <- c(0.116, 0.223, 0.281, 0.321, 0.354)
+c <- c(0.112, 0.217, 0.273, 0.310, 0.342)
+d <- c(0.112, 0.105, 0.056, 0.037, 0.032)
+importance <- cbind(a, b, c,d)
+c <- c(0.112, 0.217, 0.273, 0.310, 0.342)
+importance <- as.data.frame(importance)
+names(importance) <- c("Predictors", "Rsq", "Adjusted Rsq", "Added Adjusted Rsq")
+importance %>%
+  kable(caption = "Contribution of Predictors' to Model 2", format="html", table.attr="style='width:90%;'", align="lrrr",) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size=11, full_width = FALSE)  
+```
+
+In terms of weight in the regression equation, all variables contribute similarly, as per the standardized beta coefficients of Model 2 (Figure \@ref(fig:scaledmodel2)).
+
+```{r scaledmodel2, fig.cap="Standardized Beta Coefficients - Model 2", fig.topcaption=TRUE, fig.cap.style="Image Caption", fig.align="center", fig.show="hold", out.width="60%", comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+
+#restricted_2s <- lm(atrip~AActT+ATTT+lp1_DCBD+ParkingOrigin+TCPass, df.scaled.transformed.filtered)
+plot_model(restricted_2, sort.est = TRUE, show.values = TRUE, type = "std2")+
+  theme_sjplot(base_size=10, font_size(axis_title.x=10, axis_title.y=10))
+```
+
+# Conclusion
+
+We have identified three dimensions that affect average daily trip per person in Lisbon Metropolitan through factor analysis: Peripherality, Activity Level, and Private Transportation. We have also observed that the independent variables ParkingOrigin and AActT are good proxies of these dimensions.
+
+A multiple linear regression was calculated to predict the average trip per day per person in the Lisbon Metropolitan Area (LMA) based on total hours of activity before the last trip of the day (AActT), average minues travelling during the day (ATTT), log of distance from the residence to the CBD plus one (lp1_DCBD), parking pressure close to the residence (ParkingOrigin), and ownership of a public transport pass (TCPass). All variables were significant predictors of atrip at the p\<.01 level . A significant regression equation was found (F-statistic (5,264) =28.9 p-value \<.001), with an R^2^ of .354.
+
+Explained variability of atrip was below 40%, suggesting that other elements that explain the atrip phenomenon are not being captured by the dataset. One of these elements is the difference between intra/inter municipal trips highlighted by the 2017 statistics (INE, 2018). Future studies to identify the missing elements should be carried out.
+
+Finally, we have observed that in 2017 trips were longer in distance and shorter in duration as compared to 2010, suggesting increased car use. Future studies should investigate this trend and its drivers.
+
+# References
+
+INE (2018) Mobilidade e funcionalidade do território nas Áreas Metropolitanas do Porto e de Lisboa : 2017. Lisboa. Available at: www: \<url:<https://www.ine.pt/xurl/pub/349495406>. ISBN 978-989-25-0478-0

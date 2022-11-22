@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Models | 01-basics.knit</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Models | 01-basics.knit" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Models | 01-basics.knit" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="exploratory-factor-analysis.html"/>
+<link rel="next" href="discussion.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="assets/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="toc-logo"><a href="./"><img src="assets/images/Tecnico_logo.svg"></a></li>
+<p class="toc-course">TRANSPORT DEMAND MODELLING</p>
+<p class="toc-title">Average Daily Trip per Person in Lisbon Metropolitan Area</p>
+<p class="toc-author">Liliane Leão</p>
+<p class="toc-author">Fabiana Peixoto de Mello</p>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#dataset"><i class="fa fa-check"></i><b>1.1</b> Dataset</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#variables"><i class="fa fa-check"></i><b>1.2</b> Variables</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#a-priori-knowledge"><i class="fa fa-check"></i><b>1.3</b> A priori knowledge</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html"><i class="fa fa-check"></i><b>2</b> Exploratory Data Analysis</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html#normality-of-dependent-variable"><i class="fa fa-check"></i><b>2.1</b> Normality of Dependent Variable</a></li>
+<li class="chapter" data-level="2.2" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html#independent-variables-analysis"><i class="fa fa-check"></i><b>2.2</b> Independent Variables’ Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="outliers.html"><a href="outliers.html"><i class="fa fa-check"></i><b>3</b> Outliers</a></li>
+<li class="chapter" data-level="4" data-path="exploratory-factor-analysis.html"><a href="exploratory-factor-analysis.html"><i class="fa fa-check"></i><b>4</b> Exploratory Factor Analysis</a></li>
+<li class="chapter" data-level="5" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i><b>5</b> Models</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="models.html"><a href="models.html#model-1"><i class="fa fa-check"></i><b>5.1</b> Model 1</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="models.html"><a href="models.html#linearity"><i class="fa fa-check"></i><b>5.1.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.1.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation"><i class="fa fa-check"></i><b>5.1.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.1.3" data-path="models.html"><a href="models.html#normality-of-residuals"><i class="fa fa-check"></i><b>5.1.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.1.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity"><i class="fa fa-check"></i><b>5.1.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.1.5" data-path="models.html"><a href="models.html#homoscedasticity"><i class="fa fa-check"></i><b>5.1.5</b> Homoscedasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="models.html"><a href="models.html#model-2"><i class="fa fa-check"></i><b>5.2</b> Model 2</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="models.html"><a href="models.html#linearity-1"><i class="fa fa-check"></i><b>5.2.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.2.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation-1"><i class="fa fa-check"></i><b>5.2.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="models.html"><a href="models.html#normality-of-residuals-1"><i class="fa fa-check"></i><b>5.2.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.2.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity-1"><i class="fa fa-check"></i><b>5.2.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.2.5" data-path="models.html"><a href="models.html#homoscedasticity-1"><i class="fa fa-check"></i><b>5.2.5</b> Homoscedasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="models.html"><a href="models.html#model-3"><i class="fa fa-check"></i><b>5.3</b> Model 3</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="models.html"><a href="models.html#linearity-2"><i class="fa fa-check"></i><b>5.3.1</b> Linearity</a></li>
+<li class="chapter" data-level="5.3.2" data-path="models.html"><a href="models.html#no-or-little-autocorrelation-2"><i class="fa fa-check"></i><b>5.3.2</b> No or little autocorrelation</a></li>
+<li class="chapter" data-level="5.3.3" data-path="models.html"><a href="models.html#normality-of-residuals-2"><i class="fa fa-check"></i><b>5.3.3</b> Normality of residuals</a></li>
+<li class="chapter" data-level="5.3.4" data-path="models.html"><a href="models.html#no-or-little-multicollinearity-2"><i class="fa fa-check"></i><b>5.3.4</b> No or little multicollinearity</a></li>
+<li class="chapter" data-level="5.3.5" data-path="models.html"><a href="models.html#homoscedasticity-2"><i class="fa fa-check"></i><b>5.3.5</b> Homoscedasticity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>6</b> Discussion</a></li>
+<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
+<li class="chapter" data-level="8" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>8</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="models" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Models<a href="models.html#models" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>We have fit a model with factors’ scores of the factor analysis and two models with the original independent variables (Table <a href="discussion.html#tab:Compare">6.1</a>).</p>
+<div id="model-1" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Model 1<a href="models.html#model-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Model 1 was built with the dataset without outliers. No variables were standardized. Variables AcessMetroResid, ATTD and DCBD were transformed with log-plus-one.</p>
+<p>All regression assumptions were met.</p>
+<p>To build Model 1 we ran stepwise algorithms with the ols_best_step_subset function of the olsrr package <span class="citation">(Hebbali 2020)</span> and identified the subset AActT, lp1_AcessMetroResid, ATTT, lp1_DCBD ParkingOrigin, Personal, TCPass, and Work with the lowest AIC (32.1615) and the highest adjusted R<sup>2</sup> (.3964) . Fitting the model with this subset, we removed predictors that were not significant at the p&lt;.05 level in a stepwise manner. We first removed lp1_AcessMetroResid and then AvCar. The resulting model has 7 predictors: AActT, ATTT, lp1_DCBD, Parking Origin, Personal, TCPass and Work.</p>
+<p>A multiple linear regression was calculated to predict atrip based on AActT, ATTT, lp1_DCBD ParkingOrigin, Personal, TCPass, and Work (Table <a href="models.html#tab:SummaryModel1">5.1</a>). All variables were significant predictors of atrip at the p&lt;.01 level . A significant regression equation was found (F-statistic (7,262) =23.7 p-value &lt;.001), with an R<sup>2</sup> of .388</p>
+<table style="width:90%; font-size: 11px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:SummaryModel1">Table 5.1: </span>Model 1
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Predictors
+</th>
+<th style="text-align:right;">
+Estimates
+</th>
+<th style="text-align:right;">
+CI
+</th>
+<th style="text-align:right;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+2.65
+</td>
+<td style="text-align:right;">
+2.31 – 3.00
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AActT
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+0.10 – 0.19
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATTT
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
+0.07 – 0.14
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lp1 DCBD
+</td>
+<td style="text-align:right;">
+-0.10
+</td>
+<td style="text-align:right;">
+-0.15 – -0.05
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin
+</td>
+<td style="text-align:right;">
+0.35
+</td>
+<td style="text-align:right;">
+0.15 – 0.55
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Personal
+</td>
+<td style="text-align:right;">
+-0.68
+</td>
+<td style="text-align:right;">
+-1.17 – -0.20
+</td>
+<td style="text-align:right;">
+0.006
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TCPass
+</td>
+<td style="text-align:right;">
+-0.66
+</td>
+<td style="text-align:right;">
+-0.90 – -0.43
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Work
+</td>
+<td style="text-align:right;">
+-0.74
+</td>
+<td style="text-align:right;">
+-1.15 – -0.33
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Observations
+</td>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2 / R2 adjusted
+</td>
+<td style="text-align:right;">
+0.388 / 0.371
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+</tbody>
+</table>
+<div id="linearity" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Linearity<a href="models.html#linearity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The DV has a linear relationship with the multiple IVs in Model 1 (Figure <a href="models.html#fig:yvpModel1">5.1</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:yvpModel1"></span>
+<p class="caption">
+Figure 5.1: Residual versus Predicted Model 1
+</p>
+<img src="figs/yvpModel1.png" alt="Residual versus Predicted Model 1" width="60%"  />
+</div>
+</div>
+<div id="no-or-little-autocorrelation" class="section level3 hasAnchor" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> No or little autocorrelation<a href="models.html#no-or-little-autocorrelation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>There is no autocorrelation detected in the model according to the Durbin-Watson test (t-statistic= 1.8, p-value=0.52).</p>
+</div>
+<div id="normality-of-residuals" class="section level3 hasAnchor" number="5.1.3">
+<h3><span class="header-section-number">5.1.3</span> Normality of residuals<a href="models.html#normality-of-residuals" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Residuals of Model 1 are normally distributed as shown by its Residuals’ Histogram and QQ Plot (Figure <a href="models.html#fig:qqhistModel1">5.2</a>) and confirmed by the Shapiro-Wilk test results (t-statistic=.99, p-value=.16).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:qqhistModel1"></span>
+<p class="caption">
+Figure 5.2: Residuals’ Histogram and QQ Plot Model 1
+</p>
+<img src="figs/qqhistModel1.png" alt="Residuals' Histogram and QQ Plot Model 1" width="60%" height="40%"  />
+</div>
+</div>
+<div id="no-or-little-multicollinearity" class="section level3 hasAnchor" number="5.1.4">
+<h3><span class="header-section-number">5.1.4</span> No or little multicollinearity<a href="models.html#no-or-little-multicollinearity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>All of the IVs are correlated to at least one other IV at a correlation Pearsons’ coefficient equal or higher than .3 (Figure <a href="exploratory-factor-analysis.html#fig:CorrelationMatrix">4.1</a>). There is multicollinearity in the model but it is low and variance inflation factors (VIFs) for all variables are less than 2.5 (Table <a href="models.html#tab:Mult1">5.2</a>).</p>
+<table style="width:90%; font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:Mult1">Table 5.2: </span>Multicollinearity Diagnostic Result Model 1
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+VIF
+</th>
+<th style="text-align:right;">
+TOL
+</th>
+<th style="text-align:right;">
+Wi
+</th>
+<th style="text-align:right;">
+Fi
+</th>
+<th style="text-align:left;">
+Leamer
+</th>
+<th style="text-align:right;">
+CVIF
+</th>
+<th style="text-align:right;">
+Klein
+</th>
+<th style="text-align:right;">
+IND1
+</th>
+<th style="text-align:left;">
+IND2
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AActT
+</td>
+<td style="text-align:left;">
+1.96
+</td>
+<td style="text-align:right;">
+0.51
+</td>
+<td style="text-align:right;">
+41.91
+</td>
+<td style="text-align:right;">
+50.5
+</td>
+<td style="text-align:left;">
+0.71
+</td>
+<td style="text-align:right;">
+1.96
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATTT
+</td>
+<td style="text-align:left;">
+1.20
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:right;">
+8.78
+</td>
+<td style="text-align:right;">
+10.6
+</td>
+<td style="text-align:left;">
+0.91
+</td>
+<td style="text-align:right;">
+1.20
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:left;">
+0.39
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lp1_DCBD
+</td>
+<td style="text-align:left;">
+2.43
+</td>
+<td style="text-align:right;">
+0.41
+</td>
+<td style="text-align:right;">
+62.73
+</td>
+<td style="text-align:right;">
+75.6
+</td>
+<td style="text-align:left;">
+0.64
+</td>
+<td style="text-align:right;">
+2.43
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin
+</td>
+<td style="text-align:left;">
+1.91
+</td>
+<td style="text-align:right;">
+0.52
+</td>
+<td style="text-align:right;">
+39.84
+</td>
+<td style="text-align:right;">
+48.0
+</td>
+<td style="text-align:left;">
+0.72
+</td>
+<td style="text-align:right;">
+1.91
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Personal
+</td>
+<td style="text-align:left;">
+1.42
+</td>
+<td style="text-align:right;">
+0.71
+</td>
+<td style="text-align:right;">
+18.30
+</td>
+<td style="text-align:right;">
+22.1
+</td>
+<td style="text-align:left;">
+0.84
+</td>
+<td style="text-align:right;">
+1.42
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:left;">
+0.68
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TCPass
+</td>
+<td style="text-align:left;">
+1.74
+</td>
+<td style="text-align:right;">
+0.58
+</td>
+<td style="text-align:right;">
+32.32
+</td>
+<td style="text-align:right;">
+38.9
+</td>
+<td style="text-align:left;">
+0.76
+</td>
+<td style="text-align:right;">
+1.74
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+0.98
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Work
+</td>
+<td style="text-align:left;">
+2.46
+</td>
+<td style="text-align:right;">
+0.41
+</td>
+<td style="text-align:right;">
+63.81
+</td>
+<td style="text-align:right;">
+76.9
+</td>
+<td style="text-align:left;">
+0.64
+</td>
+<td style="text-align:right;">
+2.46
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.37
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="homoscedasticity" class="section level3 hasAnchor" number="5.1.5">
+<h3><span class="header-section-number">5.1.5</span> Homoscedasticity<a href="models.html#homoscedasticity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The variance of the residuals is constant as confirmed by the Breusch Pagan Test - χ2=1.52, prob&gt;χ2=.22 - and by the Location-Scale Plot (Figure <a href="models.html#fig:LocationScalePlot1">5.3</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:LocationScalePlot1"></span>
+<p class="caption">
+Figure 5.3: Location Scale Plot Model 1
+</p>
+<img src="figs/LocationScalePlot1.png" alt="Location Scale Plot Model 1" width="60%"  />
+</div>
+</div>
+</div>
+<div id="model-2" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Model 2<a href="models.html#model-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Model 2 was built with the dataset without outliers. No variables were standardized. Variables AcessMetroResid, ATTD and DCBD were transformed with log-plus-one.</p>
+<p>All regression assumptions were met.</p>
+<p>A multiple linear regression was calculated to predict atrip based on AActT, ATTT, lp1_DCBD ParkingOrigin, and TCPass (Table <a href="models.html#tab:SummaryModel2">5.3</a>). All variables were significant predictors of atrip at the p&lt;.01 level . A significant regression equation was found (F-statistic (5,264) =28.9 p-value &lt;.001), with an R<sup>2</sup> of .354.</p>
+<table style="width:90%; font-size: 11px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:SummaryModel2">Table 5.3: </span>Model 2
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Predictors
+</th>
+<th style="text-align:right;">
+Estimates
+</th>
+<th style="text-align:right;">
+CI
+</th>
+<th style="text-align:right;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+2.37
+</td>
+<td style="text-align:right;">
+2.06 – 2.68
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AActT
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+0.07 – 0.13
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATTT
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
+0.07 – 0.14
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lp1 DCBD
+</td>
+<td style="text-align:right;">
+-0.10
+</td>
+<td style="text-align:right;">
+-0.15 – -0.05
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin
+</td>
+<td style="text-align:right;">
+0.37
+</td>
+<td style="text-align:right;">
+0.16 – 0.57
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TCPass
+</td>
+<td style="text-align:right;">
+-0.67
+</td>
+<td style="text-align:right;">
+-0.91 – -0.43
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Observations
+</td>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2 / R2 adjusted
+</td>
+<td style="text-align:right;">
+0.354 / 0.342
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+</tbody>
+</table>
+<div id="linearity-1" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Linearity<a href="models.html#linearity-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The DV has a linear relationship with the multiple IVs in Model 1 (Figure <a href="models.html#fig:yvpModel2">5.4</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:yvpModel2"></span>
+<p class="caption">
+Figure 5.4: Residual versus Predicted Model 2
+</p>
+<img src="figs/yvpModel2.png" alt="Residual versus Predicted Model 2" width="60%"  />
+</div>
+</div>
+<div id="no-or-little-autocorrelation-1" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> No or little autocorrelation<a href="models.html#no-or-little-autocorrelation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The Durbin-Watson test shows little autocorrelation in the data (t-statistic= 1.8, p-value=.03).</p>
+</div>
+<div id="normality-of-residuals-1" class="section level3 hasAnchor" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Normality of residuals<a href="models.html#normality-of-residuals-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Residuals of Model 1 are normally distributed as shown by its Residuals’ Histogram and QQ Plot (Figure <a href="models.html#fig:qqhistModel2">5.5</a>) and confirmed by the Shapiro-Wilk test results (t-statistic=.99, p-value=.12).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:qqhistModel2"></span>
+<p class="caption">
+Figure 5.5: Residuals’ Histogram and QQ Plot Model 2
+</p>
+<img src="figs/qqhistModel2.png" alt="Residuals' Histogram and QQ Plot Model 2" width="60%" height="40%"  />
+</div>
+</div>
+<div id="no-or-little-multicollinearity-1" class="section level3 hasAnchor" number="5.2.4">
+<h3><span class="header-section-number">5.2.4</span> No or little multicollinearity<a href="models.html#no-or-little-multicollinearity-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>All of the IVs are correlated to at least one other IV at a correlation Pearsons’ coefficient equal or higher than .3 (Figure <a href="exploratory-factor-analysis.html#fig:CorrelationMatrix">4.1</a>). There is multicollinearity in the model but it is low and variance inflation factors (VIFs) for all variables are less than 2.5 (Table <a href="models.html#tab:Mult2">5.4</a>).</p>
+<table style="width:90%; font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:Mult2">Table 5.4: </span>Multicollinearity Diagnostic Result Model 2
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+VIF
+</th>
+<th style="text-align:right;">
+TOL
+</th>
+<th style="text-align:right;">
+Wi
+</th>
+<th style="text-align:right;">
+Fi
+</th>
+<th style="text-align:left;">
+Leamer
+</th>
+<th style="text-align:right;">
+CVIF
+</th>
+<th style="text-align:right;">
+Klein
+</th>
+<th style="text-align:right;">
+IND1
+</th>
+<th style="text-align:left;">
+IND2
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AActT
+</td>
+<td style="text-align:left;">
+1.08
+</td>
+<td style="text-align:right;">
+0.93
+</td>
+<td style="text-align:right;">
+5.04
+</td>
+<td style="text-align:right;">
+6.75
+</td>
+<td style="text-align:left;">
+0.96
+</td>
+<td style="text-align:right;">
+1.07
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+0.21
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATTT
+</td>
+<td style="text-align:left;">
+1.20
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:right;">
+13.19
+</td>
+<td style="text-align:right;">
+17.65
+</td>
+<td style="text-align:left;">
+0.91
+</td>
+<td style="text-align:right;">
+1.19
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+0.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lp1_DCBD
+</td>
+<td style="text-align:left;">
+2.42
+</td>
+<td style="text-align:right;">
+0.41
+</td>
+<td style="text-align:right;">
+94.06
+</td>
+<td style="text-align:right;">
+125.89
+</td>
+<td style="text-align:left;">
+0.64
+</td>
+<td style="text-align:right;">
+2.40
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.70
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ParkingOrigin
+</td>
+<td style="text-align:left;">
+1.91
+</td>
+<td style="text-align:right;">
+0.52
+</td>
+<td style="text-align:right;">
+60.07
+</td>
+<td style="text-align:right;">
+80.40
+</td>
+<td style="text-align:left;">
+0.72
+</td>
+<td style="text-align:right;">
+1.89
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TCPass
+</td>
+<td style="text-align:left;">
+1.74
+</td>
+<td style="text-align:right;">
+0.58
+</td>
+<td style="text-align:right;">
+48.82
+</td>
+<td style="text-align:right;">
+65.33
+</td>
+<td style="text-align:left;">
+0.76
+</td>
+<td style="text-align:right;">
+1.72
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="homoscedasticity-1" class="section level3 hasAnchor" number="5.2.5">
+<h3><span class="header-section-number">5.2.5</span> Homoscedasticity<a href="models.html#homoscedasticity-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The variance of the residuals is constant as confirmed by the Breusch Pagan Test - χ2=5.13, prob&gt;χ2=.02 - and by the Location-Scale Plot (Figure <a href="models.html#fig:LocationScalePlot2">5.6</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:LocationScalePlot2"></span>
+<p class="caption">
+Figure 5.6: Location Scale Plot Model 2
+</p>
+<img src="figs/LocationScalePlot2.png" alt="Location Scale Plot Model 2" width="60%"  />
+</div>
+</div>
+</div>
+<div id="model-3" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Model 3<a href="models.html#model-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Model 3 was built with the dataset of the four factors’ scores extracted from the factor analysis.</p>
+<p>All assumptions of linear regression were met.</p>
+<p>A multiple linear regression was calculated to predict atrip based on CBD.Separation, Activity,Level, and Personal,Trips (Table <a href="models.html#tab:SummaryModel3">5.5</a>). All variables were significant predictors of atrip at the p&lt;.01 level. A significant regression equation was found (F-statistic (3,259) =18.64 p-value &lt;.01), with an R<sup>2</sup> of .178.</p>
+<table style="width:90%; font-size: 11px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:SummaryModel3">Table 5.5: </span>Model 3
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Predictors
+</th>
+<th style="text-align:right;">
+Estimates
+</th>
+<th style="text-align:right;">
+CI
+</th>
+<th style="text-align:right;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+2.68
+</td>
+<td style="text-align:right;">
+2.64 – 2.71
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Peripherality
+</td>
+<td style="text-align:right;">
+-0.14
+</td>
+<td style="text-align:right;">
+-0.18 – -0.10
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Activity Level
+</td>
+<td style="text-align:right;">
+0.09
+</td>
+<td style="text-align:right;">
+0.05 – 0.13
+</td>
+<td style="text-align:right;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Private Transport
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.02 – 0.11
+</td>
+<td style="text-align:right;">
+0.004
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Observations
+</td>
+<td style="text-align:right;">
+263
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2 / R2 adjusted
+</td>
+<td style="text-align:right;">
+0.178 / 0.168
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+</tbody>
+</table>
+<div id="linearity-2" class="section level3 hasAnchor" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> Linearity<a href="models.html#linearity-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The DV has a linear relationship with the multiple IVs in Model 3 (Figure <a href="models.html#fig:yvpModel3">5.7</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:yvpModel3"></span>
+<p class="caption">
+Figure 5.7: Residual versus Predicted Model 3
+</p>
+<img src="figs/yvpModel3.png" alt="Residual versus Predicted Model 3" width="60%"  />
+</div>
+</div>
+<div id="no-or-little-autocorrelation-2" class="section level3 hasAnchor" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> No or little autocorrelation<a href="models.html#no-or-little-autocorrelation-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>There is no autocorrelation detected in the model according to the Durbin-Watson test (t-statistic= 1.8, p-value=0.136).</p>
+</div>
+<div id="normality-of-residuals-2" class="section level3 hasAnchor" number="5.3.3">
+<h3><span class="header-section-number">5.3.3</span> Normality of residuals<a href="models.html#normality-of-residuals-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Residuals of Model 1 are normally distributed as shown by its Residuals’ Histogram and QQ Plot (Figure <a href="models.html#fig:qqhistModel3">5.8</a>) and confirmed by the Shapiro-Wilk test results (t-statistic=1, p-value=.78).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:qqhistModel3"></span>
+<p class="caption">
+Figure 5.8: Residuals’ Histogram and QQ Plot Model 2
+</p>
+<img src="figs/qqhistModel3.png" alt="Residuals' Histogram and QQ Plot Model 2" width="60%" height="40%"  />
+</div>
+</div>
+<div id="no-or-little-multicollinearity-2" class="section level3 hasAnchor" number="5.3.4">
+<h3><span class="header-section-number">5.3.4</span> No or little multicollinearity<a href="models.html#no-or-little-multicollinearity-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>No independent variable is significantly correlated to the other at a correlation Pearsons’ coefficient equal or higher than .3 (Figure <a href="exploratory-factor-analysis.html#fig:CorrelationMatrix">4.1</a>). No multicollinearity was detected in the model (Table <span class="citation">(<strong>ref?</strong>)</span>(tab:Mult3)).</p>
+<table style="width:90%; font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed">
+<caption style="font-size: initial !important;">
+<span id="tab:Mult3">Table 5.6: </span>Multicollinearity Diagnostic Result Model 3
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+VIF
+</th>
+<th style="text-align:right;">
+TOL
+</th>
+<th style="text-align:right;">
+Wi
+</th>
+<th style="text-align:right;">
+Fi
+</th>
+<th style="text-align:left;">
+Leamer
+</th>
+<th style="text-align:right;">
+CVIF
+</th>
+<th style="text-align:right;">
+Klein
+</th>
+<th style="text-align:right;">
+IND1
+</th>
+<th style="text-align:left;">
+IND2
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Peripherality
+</td>
+<td style="text-align:left;">
+1.23
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:right;">
+29.52
+</td>
+<td style="text-align:right;">
+59.26
+</td>
+<td style="text-align:left;">
+0.90
+</td>
+<td style="text-align:right;">
+1.17
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Activity.Level
+</td>
+<td style="text-align:left;">
+1.03
+</td>
+<td style="text-align:right;">
+0.97
+</td>
+<td style="text-align:right;">
+4.49
+</td>
+<td style="text-align:right;">
+9.02
+</td>
+<td style="text-align:left;">
+0.98
+</td>
+<td style="text-align:right;">
+0.99
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+0.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Private.Transport
+</td>
+<td style="text-align:left;">
+1.22
+</td>
+<td style="text-align:right;">
+0.82
+</td>
+<td style="text-align:right;">
+29.03
+</td>
+<td style="text-align:right;">
+58.28
+</td>
+<td style="text-align:left;">
+0.90
+</td>
+<td style="text-align:right;">
+1.16
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+1.37
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="homoscedasticity-2" class="section level3 hasAnchor" number="5.3.5">
+<h3><span class="header-section-number">5.3.5</span> Homoscedasticity<a href="models.html#homoscedasticity-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The variance of the residuals is constant as confirmed by the Breusch Pagan Test - χ2=0..18, prob&gt;χ2=0,.67 - and by the Location-Scale Plot (Figure <a href="models.html#fig:LocationScalePlot3">5.9</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:LocationScalePlot3"></span>
+<p class="caption">
+Figure 5.9: Location Scale Plot Model 3
+</p>
+<img src="figs/LocationScalePlot3.png" alt="Location Scale Plot Model 3" width="60%"  />
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="exploratory-factor-analysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="discussion.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "section",
+"depth": 4
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
